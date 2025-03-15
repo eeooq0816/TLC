@@ -1,0 +1,39 @@
+name: CI/CD Pipeline
+
+# 觸發條件
+on:
+  push:
+    branches:
+      - main  # 這裡設定每次推送到 main 分支時觸發
+  pull_request:
+    branches:
+      - main  # 當有 pull request 合併到 main 時觸發
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # 運行環境選擇 Ubuntu，GitHub Actions 支援多種運行環境
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2  # 檢出代碼，這是 GitHub Actions 的一個常用 Action
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2  # 設置 Node.js 環境，這裡假設你的專案使用 Node.js
+      with:
+        node-version: '14'  # 指定 Node.js 版本
+
+    - name: Install dependencies
+      run: npm install  # 安裝專案依賴
+
+    - name: Run tests
+      run: npm test  # 執行單元測試
+
+    - name: Build
+      run: npm run build  # 構建專案，這步驟取決於你的專案需要什麼構建步驟
+
+    - name: Deploy (可選)
+      run: |
+        # 在這裡添加部署命令，例如將應用程序部署到某個伺服器
+        echo "Deploying to production..."
+      if: github.ref == 'refs/heads/main'  # 只有在 main 分支推送後才執行部署
+
